@@ -31,7 +31,7 @@
 }
 
 .carousel-content > * {
-  width: 100%;
+  width: calc(100% / 3);
   flex-shrink: 0;
   flex-grow: 1;
 }
