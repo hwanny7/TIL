@@ -16,7 +16,7 @@ function Carousel(props) {
   }, [children]);
 
   const next = () => {
-    if (currentIndex < length - 1) {
+    if (currentIndex < length - 3) {
       setCurrentIndex((prevState) => prevState + 1);
     }
   };
@@ -27,31 +27,31 @@ function Carousel(props) {
     }
   };
 
-  const handleTouchStart = (e) => {
-    const touchDown = e.touches[0].clientX;
-    setTouchPosition(touchDown);
-  };
+  //   const handleTouchStart = (e) => {
+  //     const touchDown = e.touches[0].clientX;
+  //     setTouchPosition(touchDown);
+  //   };
 
-  const handleTouchMove = (e) => {
-    const touchDown = touchPosition;
+  //   const handleTouchMove = (e) => {
+  //     const touchDown = touchPosition;
 
-    if (touchDown === null) {
-      return;
-    }
+  //     if (touchDown === null) {
+  //       return;
+  //     }
 
-    const currentTouch = e.touches[0].clientX;
-    const diff = touchDown - currentTouch;
+  //     const currentTouch = e.touches[0].clientX;
+  //     const diff = touchDown - currentTouch;
 
-    if (diff > 5) {
-      next();
-    }
+  //     if (diff > 5) {
+  //       next();
+  //     }
 
-    if (diff < -5) {
-      prev();
-    }
+  //     if (diff < -5) {
+  //       prev();
+  //     }
 
-    setTouchPosition(null);
-  };
+  //     setTouchPosition(null);
+  //   };
 
   return (
     <div className="carousel-container">
@@ -60,21 +60,21 @@ function Carousel(props) {
           Left
         </button>
       )}
-      <div
+      {/* <div
         className="carousel-wrapper"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
-      >
-        <div className="carousel-content-wrapper">
-          <div
-            className="carousel-content"
-            style={{ transform: `translateX(-${currentIndex * 33}%)` }}
-          >
-            {children}
-          </div>
+      > */}
+      <div className="carousel-content-wrapper">
+        <div
+          className="carousel-content"
+          style={{ transform: `translateX(-${currentIndex * 35}%)` }}
+        >
+          {children}
         </div>
       </div>
-      {currentIndex < length - 1 && (
+      {/* </div> */}
+      {currentIndex < length - 3 && (
         <button onClick={next} className="right-arrow">
           Right
         </button>
