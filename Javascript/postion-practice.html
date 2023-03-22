@@ -9,8 +9,8 @@
   <body>
     <div>one</div>
     <div>two</div>
-    <div>
-      <div class="absolute"></div>
+    <div class="relative">
+      <div class="absolute">three</div>
     </div>
   </body>
 </html>
@@ -30,9 +30,8 @@
     margin-left: 5px;
   }
 
-  div:nth-of-type(1) {
+  .relative {
     background: red;
-    position: relative;
   }
   .absolute {
     position: absolute;
