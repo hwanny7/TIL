@@ -13,7 +13,7 @@ function App() {
       hightlight: false,
     },
     {
-      box: false,
+      box: true,
       clue: 0,
       answer: "",
       cursor: false,
@@ -21,7 +21,7 @@ function App() {
       hightlight: false,
     },
     {
-      box: false,
+      box: true,
       clue: 0,
       answer: "",
       cursor: false,
@@ -77,8 +77,11 @@ function App() {
       hightlight: false,
     },
   ]);
-  const acrossList = { 1: { answer: "dog", length: 3, dir: "down" } };
-  const downList = { 2: { answer: "cat", length: 3, dir: "across" } };
+  const clueList = [
+    { clue: 1, answer: "dog", length: 3, dir: "across", index: 0 },
+    { clue: 2, answer: "cat", length: 3, dir: "across", index: 3 },
+    { clue: 1, answer: "dog", length: 3, dir: "down", index: 0 },
+  ];
   const copyRef = useRef(null);
   const state = useRef({
     index: null,
@@ -98,21 +101,41 @@ function App() {
         case "Enter":
           return;
         case "Tab":
-          let currentIndex = state.current.index;
-          let moveIndex;
-          if (e.shiftkey === true) {
-            moveIndex = currentIndex - 1;
+          let nextIndex;
+          if (!state.current.clue) {
+            nextIndex = -1;
           } else {
-            moveIndex = currentIndex + 1;
+            clueList.forEach((element, idx) => {
+              if (
+                element.clue === state.current.clue &&
+                element.dir === state.current.dir
+              ) {
+                nextIndex = idx;
+                return false;
+              }
+            });
           }
 
-          if (currentIndex === 2) {
-            // 2는 clue 의 총 갯수
-            moveIndex = 0;
-          } else if (moveIndex === -1) {
-            moveIndex = 2 - 1;
+          if (e.shiftKey === true) {
+            nextIndex -= 1;
+          } else {
+            nextIndex += 1;
           }
-          editClue(wordList[moveIndex], moveIndex);
+
+          // shift key + tap key => 뒤로 가기, tap key => 앞으로 가기
+
+          if (nextIndex === clueList.length) {
+            nextIndex = 0;
+          } else if (nextIndex < 0) {
+            nextIndex = clueList.length - 1;
+          }
+          console.log(nextIndex, "next");
+          editClue(
+            wordList[clueList[nextIndex].index],
+            clueList[nextIndex].index,
+            clueList[nextIndex]
+          );
+
           return;
         case "Backspace":
           if (!state.current.clue) return;
@@ -189,25 +212,23 @@ function App() {
     };
   }, []);
 
-  const findClue = (clueNum) => {
-    if (
-      acrossList[clueNum] &&
-      downList[clueNum] &&
-      state.current.clue === clueNum
-    ) {
-      return state.current.dir === "down"
-        ? acrossList[clueNum]
-        : downList[clueNum];
-      // 똑같은 걸 두번 클릭했을 경우 축으로 준다
-    } else if (acrossList[clueNum]) {
-      return acrossList[clueNum];
+  const findClue = (clueNum, tab) => {
+    if (tab) {
+      return tab;
+    }
+    const clues = clueList.filter((item) => {
+      return item.clue === clueNum;
+    });
+    if (clues.length === 1) {
+      return clues[0];
+    } else if (state.current.clue === clues[0].clue) {
+      return state.current.dir === "across" ? clues[1] : clues[0];
     } else {
-      return downList[clueNum];
+      return clues[0];
     }
   };
 
-  const editClue = (item, idx) => {
-    console.log("editclue 실행!");
+  const editClue = (item, idx, tab) => {
     let copy = [...wordList];
     if (state.current.clue) {
       const index = state.current.index;
@@ -216,21 +237,19 @@ function App() {
           copy[i + index].cursor = false;
           copy[i + index].edit = false;
         }
-        console.log("업입니다!");
       } else {
         for (let i = 0; i < state.current.length; i++) {
-          console.log(i + index * 3);
           copy[index + i * 3].cursor = false;
           copy[index + i * 3].edit = false;
         }
       }
-      console.log(copy, state.current);
+
       setWordList(copy);
     }
     // ================================================= 이전 하이라이팅 제거
 
     const { clue } = item;
-    const { answer, length, dir } = findClue(clue);
+    const { answer, length, dir } = findClue(clue, tab);
 
     for (let i = 0; i < length; i++) {
       if (dir === "across") {
