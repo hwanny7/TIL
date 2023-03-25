@@ -130,6 +130,7 @@ function App() {
             nextIndex = clueList.length - 1;
           }
           console.log(nextIndex, "next");
+          console.log(copyRef.current, "tap 사본");
           editClue(
             wordList[clueList[nextIndex].index],
             clueList[nextIndex].index,
@@ -210,7 +211,7 @@ function App() {
     return () => {
       document.removeEventListener("keydown", keyPressHandler);
     };
-  }, []);
+  }, [copyRef.current]);
 
   const findClue = (clueNum, tab) => {
     if (tab) {
@@ -229,7 +230,12 @@ function App() {
   };
 
   const editClue = (item, idx, tab) => {
-    let copy = [...wordList];
+    console.log(copyRef.current, "editclue");
+    copyRef.current
+      ? console.log([...copyRef.current], "시발 안 사라졌다니까?")
+      : console.log("유실");
+    let copy = copyRef.current ? [...copyRef.current] : [...wordList];
+    console.log(copy, "copy", copyRef.current);
     if (state.current.clue) {
       const index = state.current.index;
       if (state.current.dir === "across") {
