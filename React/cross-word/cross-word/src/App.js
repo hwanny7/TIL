@@ -139,7 +139,7 @@ function App() {
     clue: null,
     cursor: 0,
     length: null,
-    answers: {},
+    answers: [...Array(4)].map((e) => Array(4).fill("")),
     dir: null,
   });
 
@@ -187,44 +187,60 @@ function App() {
 
       const { clue } = item;
       const { answer, length, dir } = findClue(clue, tab);
-      console.log(length, dir);
 
+      let cursor = length - 1;
       for (let i = 0; i < length; i++) {
         if (dir === "across") {
           copy[i + idx] = { ...copy[i + idx], edit: true };
+          if (
+            state.current.answers[Math.floor(idx / 4)][(idx + i) % 4] === "" &&
+            cursor === length - 1
+          ) {
+            cursor = i;
+          }
         } else {
           copy[idx + i * 4] = { ...copy[idx + i * 4], edit: true };
+          if (
+            state.current.answers[Math.floor(idx / 4 + i)][idx % 4] === "" &&
+            cursor === length - 1
+          ) {
+            cursor = i;
+          }
         }
       }
       setWordList(copy);
 
-      state.current = { ...state.current, index: idx, clue, dir, length };
+      state.current = {
+        ...state.current,
+        index: idx,
+        clue,
+        dir,
+        length,
+        cursor,
+      };
 
-      if (state.current.answers[clue + "-" + dir] === undefined) {
-        state.current.answers[clue + "-" + dir] = "";
-        state.current.cursor = 0;
-      } else {
-        if (
-          state.current.length ===
-          state.current.answers[clue + "-" + dir].length
-        ) {
-          state.current.cursor =
-            state.current.answers[clue + "-" + dir].length - 1;
-        } else {
-          state.current.cursor = state.current.answers[clue + "-" + dir].length;
-        } // 해당 인덱스에 알파벳이 적혀 있는지 확인 후 있다면 건너 뛴다.
-      }
+      // if (state.current.answers[clue + "-" + dir] === undefined) {
+      //   state.current.answers[clue + "-" + dir] = "";
+      //   state.current.cursor = 0;
+      // } else {
+      //   if (
+      //     state.current.length ===
+      //     state.current.answers[clue + "-" + dir].length
+      //   ) {
+      //     state.current.cursor =
+      //       state.current.answers[clue + "-" + dir].length - 1;
+      //   } else {
+      //     state.current.cursor = state.current.answers[clue + "-" + dir].length;
+      //   } // 해당 인덱스에 알파벳이 적혀 있는지 확인 후 있다면 건너 뛴다.
+      // }
+
+      //========================================================================
 
       if (state.current.dir === "across") {
         copy[state.current.index + state.current.cursor].cursor = true;
       } else {
         copy[state.current.index + state.current.cursor * 4].cursor = true;
       }
-
-      // 클릭하면 커서, edit 기능만 하는 구간
-      // setWordList(copy);??
-
-      // 힌트에 불 들어오게 하는 로직 짜기
     },
     [wordList, findClue]
   );
@@ -313,34 +329,45 @@ function App() {
           return;
         case "Backspace":
           if (!state.current.clue) return;
-          state.current.answers[state.current.clue + "-" + state.current.dir] =
+
+          if (state.current.dir === "across") {
+            state.current.answers[Math.floor(state.current.index / 4)][
+              (state.current.index + state.current.cursor) % 4
+            ] = "";
+          } else {
             state.current.answers[
-              state.current.clue + "-" + state.current.dir
-            ].substr(
-              0,
-              state.current.answers[
-                state.current.clue + "-" + state.current.dir
-              ].length - 1
-            );
-          // 일단 answer에서 지우고 default를 통과하고 그 밑에서 해결한다
+              Math.floor(state.current.index / 4 + state.current.cursor)
+            ][state.current.index % 4] = "";
+          }
+          console.log(
+            state.current.answers,
+            "백스페이스바",
+            state.current.cursor
+          );
 
           break;
         default:
           if (!state.current.clue) return;
           // clue를 클릭하지 않고, 입력했을 때
           if (e.key.length > 1) return;
-          if (
-            state.current.answers[state.current.clue + "-" + state.current.dir]
-              .length < state.current.length
-          ) {
+
+          if (state.current.dir === "across") {
+            state.current.answers[Math.floor(state.current.index / 4)][
+              (state.current.index + state.current.cursor) % 4
+            ] = e.key;
+          } else {
             state.current.answers[
-              state.current.clue + "-" + state.current.dir
-            ] += e.key;
-            // 밑에서 cursor 위치 바꿀 때 입력 길이 확인함
+              Math.floor(state.current.index / 4 + state.current.cursor)
+            ][state.current.index % 4] = e.key;
           }
+
+          console.log(state.current.answers, "입력", state.current.cursor);
           break;
       }
+
+      console.log(state.current.answers);
       let copy = [...wordList];
+
       if (state.current.dir === "across") {
         copy[state.current.index + state.current.cursor].cursor = false;
         if (e.key.length === 9) {
@@ -356,21 +383,19 @@ function App() {
           copy[state.current.index + state.current.cursor * 4].answer = e.key;
         }
       }
-      state.current.cursor =
-        state.current.answers[
-          state.current.clue + "-" + state.current.dir
-        ].length;
+
       if (e.key.length === 9) {
         state.current.cursor -= 1;
+      } else {
+        state.current.cursor += 1;
       }
 
       if (state.current.cursor < 0) {
         state.current.cursor = 0;
-
-        // 입력 커서가 0보다 작아지는 경우가 있나?
       } else if (state.current.cursor > state.current.length - 1) {
         state.current.cursor = state.current.length - 1;
       }
+
       if (state.current.dir === "across") {
         copy[state.current.index + state.current.cursor].cursor = true;
       } else {
@@ -389,7 +414,7 @@ function App() {
     };
   }, [keyPressHandler]);
 
-  const toggleClue = (clue) => {
+  const toggleClue = async (clue) => {
     const { index, dir, length } = clue;
     let copy = [...wordList];
     for (let i = 0; i < length; i++) {
@@ -405,7 +430,6 @@ function App() {
         };
       }
     }
-    console.log(copy);
     setWordList(copy);
   };
 
@@ -452,8 +476,8 @@ function App() {
             <li
               key={idx}
               data-clue={clue.clue}
-              onMouseOver={() => toggleClue(clue)}
-              onMouseOut={() => toggleClue(clue)}
+              // onMouseOver={() => toggleClue(clue)}
+              // onMouseOut={() => toggleClue(clue)}
             >
               {idx + ".  " + clue.content}
             </li>
