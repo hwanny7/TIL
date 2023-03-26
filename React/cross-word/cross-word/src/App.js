@@ -164,7 +164,6 @@ function App() {
 
   const editClue = useCallback(
     (item, idx, tab) => {
-      console.log(item);
       let copy = [...wordList];
 
       if (state.current.clue) {
@@ -183,10 +182,13 @@ function App() {
 
         setWordList(copy);
       }
-      // ================================================= 이전 하이라이팅 제거
+
+      // 이전에 켜져 있는 edit과 cursor 지우기
 
       const { clue } = item;
-      const { answer, length, dir } = findClue(clue, tab);
+      const { length, dir } = findClue(clue, tab);
+
+      // 수직으로 갈지 수평으로 갈지 불러오기
 
       let cursor = length - 1;
       for (let i = 0; i < length; i++) {
@@ -208,6 +210,8 @@ function App() {
           }
         }
       }
+
+      // 해당 축에 edit style 입히고, 만약 입력된 값이 있다면 cursor 위치 변경하기
       setWordList(copy);
 
       state.current = {
@@ -219,28 +223,13 @@ function App() {
         cursor,
       };
 
-      // if (state.current.answers[clue + "-" + dir] === undefined) {
-      //   state.current.answers[clue + "-" + dir] = "";
-      //   state.current.cursor = 0;
-      // } else {
-      //   if (
-      //     state.current.length ===
-      //     state.current.answers[clue + "-" + dir].length
-      //   ) {
-      //     state.current.cursor =
-      //       state.current.answers[clue + "-" + dir].length - 1;
-      //   } else {
-      //     state.current.cursor = state.current.answers[clue + "-" + dir].length;
-      //   } // 해당 인덱스에 알파벳이 적혀 있는지 확인 후 있다면 건너 뛴다.
-      // }
-
-      //========================================================================
-
       if (state.current.dir === "across") {
         copy[state.current.index + state.current.cursor].cursor = true;
       } else {
         copy[state.current.index + state.current.cursor * 4].cursor = true;
       }
+
+      // 해당 축에서 입력된 값이 이미 있다면 그 다음 칸으로, 아니라면 첫번째 칸에 cursor style 입히기
     },
     [wordList, findClue]
   );
@@ -285,10 +274,16 @@ function App() {
   const keyPressHandler = useCallback(
     (e) => {
       e.preventDefault();
+      console.log(e.key);
       switch (e.key) {
         case "Shift":
         case "Space":
         case "Enter":
+          return;
+        case "ArrowUp":
+        case "ArrowLeft":
+        case "ArrowDown":
+        case "ArrowRight":
           return;
         case "Tab":
           let nextIndex;
@@ -332,76 +327,93 @@ function App() {
 
           if (state.current.dir === "across") {
             state.current.answers[Math.floor(state.current.index / 4)][
-              (state.current.index + state.current.cursor) % 4
+              state.current.cursor
             ] = "";
           } else {
-            state.current.answers[
-              Math.floor(state.current.index / 4 + state.current.cursor)
-            ][state.current.index % 4] = "";
+            state.current.answers[Math.floor(state.current.cursor)][
+              state.current.index % 4
+            ] = "";
           }
-          console.log(
-            state.current.answers,
-            "백스페이스바",
-            state.current.cursor
-          );
 
+          // 정답에서 해당 인덱스 지우기
           break;
         default:
           if (!state.current.clue) return;
-          // clue를 클릭하지 않고, 입력했을 때
+          console.log(e.key.length);
           if (e.key.length > 1) return;
+          // 클루가 없거나 이상한 키를 입력했을 때
 
           if (state.current.dir === "across") {
             state.current.answers[Math.floor(state.current.index / 4)][
-              (state.current.index + state.current.cursor) % 4
+              state.current.cursor % 4
             ] = e.key;
           } else {
-            state.current.answers[
-              Math.floor(state.current.index / 4 + state.current.cursor)
-            ][state.current.index % 4] = e.key;
+            state.current.answers[Math.floor(state.current.cursor)][
+              state.current.index % 4
+            ] = e.key;
           }
 
-          console.log(state.current.answers, "입력", state.current.cursor);
+          // 정답에 반영하기
           break;
       }
 
-      console.log(state.current.answers);
       let copy = [...wordList];
 
-      if (state.current.dir === "across") {
-        copy[state.current.index + state.current.cursor].cursor = false;
+      const { dir, index, cursor, length, answers } = state.current;
+
+      if (dir === "across") {
+        copy[index + cursor].cursor = false;
         if (e.key.length === 9) {
-          copy[state.current.index + state.current.cursor].answer = "";
-        } else {
-          copy[state.current.index + state.current.cursor].answer = e.key;
+          copy[index + cursor].answer = "";
+        } else if (e.key.length === 1) {
+          copy[index + cursor].answer = e.key;
         }
       } else {
-        copy[state.current.index + state.current.cursor * 4].cursor = false;
+        copy[index + cursor * 4].cursor = false;
         if (e.key.length === 9) {
-          copy[state.current.index + state.current.cursor * 4].answer = "";
-        } else {
-          copy[state.current.index + state.current.cursor * 4].answer = e.key;
+          copy[index + cursor * 4].answer = "";
+        } else if (e.key.length === 1) {
+          copy[index + cursor * 4].answer = e.key;
         }
       }
-
       if (e.key.length === 9) {
         state.current.cursor -= 1;
       } else {
         state.current.cursor += 1;
+        if (
+          dir === "across" &&
+          state.current.cursor + 1 < length &&
+          answers[Math.floor(index / 4)][state.current.cursor] !== ""
+        ) {
+          state.current.cursor += 1;
+        } else if (
+          dir === "down" &&
+          state.current.cursor + 1 < length &&
+          answers[state.current.cursor][index % 4] !== ""
+        ) {
+          state.current.cursor += 1;
+        }
+        // 키 입력할 때 해당 인덱스가 채워져 있다면 다음 인덱스로 이동
       }
+
+      // 다음 커서 위치 설정 (키 입력에 따라서)
 
       if (state.current.cursor < 0) {
         state.current.cursor = 0;
-      } else if (state.current.cursor > state.current.length - 1) {
-        state.current.cursor = state.current.length - 1;
+      } else if (state.current.cursor > length - 1) {
+        state.current.cursor = length - 1;
       }
 
-      if (state.current.dir === "across") {
-        copy[state.current.index + state.current.cursor].cursor = true;
+      // 커서가 length 범위를 나가는 예외상황 때 수정
+
+      if (dir === "across") {
+        copy[index + state.current.cursor].cursor = true;
       } else {
-        copy[state.current.index + state.current.cursor * 4].cursor = true;
+        copy[index + state.current.cursor * 4].cursor = true;
       }
       setWordList(copy);
+
+      // 다음 커서 반영
     },
     [wordList, clueList, editClue]
   );
