@@ -133,7 +133,7 @@ function App() {
       hightlight: false,
     },
   ]);
-  const [clueList, setClueList] = useState(null);
+  const [clueList, setClueList] = useState([]);
   const state = useRef({
     index: null,
     clue: null,
@@ -191,9 +191,9 @@ function App() {
 
       for (let i = 0; i < length; i++) {
         if (dir === "across") {
-          copy[i + idx] = { ...wordList[i + idx], edit: true };
+          copy[i + idx] = { ...copy[i + idx], edit: true };
         } else {
-          copy[idx + i * 4] = { ...wordList[idx + i * 4], edit: true };
+          copy[idx + i * 4] = { ...copy[idx + i * 4], edit: true };
         }
       }
       setWordList(copy);
@@ -231,15 +231,43 @@ function App() {
 
   useEffect(() => {
     setClueList([
-      { clue: 1, answer: "dog", length: 3, dir: "across", index: 0 },
-      { clue: 3, answer: "daum", length: 4, dir: "across", index: 8 },
-      { clue: 2, answer: "oman", length: 4, dir: "down", index: 1 },
-      { clue: 4, answer: "ma", length: 2, dir: "down", index: 11 },
+      {
+        clue: 1,
+        answer: "dog",
+        length: 3,
+        dir: "across",
+        index: 0,
+        content: "애완동물",
+      },
+      {
+        clue: 2,
+        answer: "oman",
+        length: 4,
+        dir: "down",
+        index: 1,
+        content: "아랍에미레이트 옆에 국가",
+      },
+      {
+        clue: 3,
+        answer: "daum",
+        length: 4,
+        dir: "across",
+        index: 8,
+        content: "네이버 전에 잘나가던",
+      },
+      {
+        clue: 4,
+        answer: "ma",
+        length: 2,
+        dir: "down",
+        index: 11,
+        content: "ma",
+      },
     ]);
   }, []);
 
-  useEffect(() => {
-    const keyPressHandler = (e) => {
+  const keyPressHandler = useCallback(
+    (e) => {
       e.preventDefault();
       switch (e.key) {
         case "Shift":
@@ -349,13 +377,37 @@ function App() {
         copy[state.current.index + state.current.cursor * 4].cursor = true;
       }
       setWordList(copy);
-    };
+    },
+    [wordList, clueList, editClue]
+  );
 
+  useEffect(() => {
+    console.log("재렌더링!");
     document.addEventListener("keydown", keyPressHandler);
     return () => {
       document.removeEventListener("keydown", keyPressHandler);
     };
-  }, [wordList, clueList, editClue]);
+  }, [keyPressHandler]);
+
+  const toggleClue = (clue) => {
+    const { index, dir, length } = clue;
+    let copy = [...wordList];
+    for (let i = 0; i < length; i++) {
+      if (dir === "across") {
+        copy[i + index] = {
+          ...copy[i + index],
+          hightlight: !copy[i + index].hightlight,
+        };
+      } else {
+        copy[index + i * 4] = {
+          ...copy[index + i * 4],
+          hightlight: !copy[i + index].hightlight,
+        };
+      }
+    }
+    console.log(copy);
+    setWordList(copy);
+  };
 
   return (
     <div className="grid">
@@ -395,6 +447,20 @@ function App() {
         })}
       </main>
       <ul>
+        {clueList.map((clue, idx) => {
+          return (
+            <li
+              key={idx}
+              data-clue={clue.clue}
+              onMouseOver={() => toggleClue(clue)}
+              onMouseOut={() => toggleClue(clue)}
+            >
+              {idx + ".  " + clue.content}
+            </li>
+          );
+        })}
+      </ul>
+      <ul>
         <li className="heading">Across</li>
         <li data-clue="1" data-dir="across" data-length="2">
           1. Horizontal viewport unit (2)
@@ -402,61 +468,7 @@ function App() {
         <li data-clue="4" data-dir="across" data-length="3">
           4. A line in the grid (3)
         </li>
-        <li data-clue="6" data-dir="across" data-length="6">
-          6. Removed from the DOM (6)
-        </li>
-        <li data-clue="8" data-dir="across" data-length="3">
-          8. child, of-type, etc (3)
-        </li>
-        <li data-clue="9" data-dir="across" data-length="5">
-          9. Post, pseudo element (5)
-        </li>
-        <li data-clue="10" data-dir="across" data-length="4">
-          10. CSS layout tech (4)
-        </li>
-        <li data-clue="11" data-dir="across" data-length="4">
-          11. Named layout group (4)
-        </li>
-        <li data-clue="13" data-dir="across" data-length="5">
-          13. Text hue (5)
-        </li>
-        <li data-clue="15" data-dir="across" data-length="11">
-          15. No color (11)
-        </li>
       </ul>
-
-      <ul>
-        <li className="heading">Down</li>
-        <li data-clue="1" data-dir="down" data-length="2">
-          1. Vertical viewport unit (2)
-        </li>
-        <li data-clue="2" data-dir="down" data-length="5">
-          2. Fixed horizontal length (5)
-        </li>
-        <li data-clue="3" data-dir="down" data-length="8">
-          3. Positioned in parent's frame (8)
-        </li>
-        <li data-clue="5" data-dir="down" data-length="11">
-          5. Text display direction (7,4)
-        </li>
-        <li data-clue="7" data-dir="down" data-length="6">
-          7. Around the outside (6)
-        </li>
-        <li data-clue="10" data-dir="down" data-length="3">
-          10. Space between elements (3)
-        </li>
-        <li data-clue="12" data-dir="down" data-length="5">
-          12. Opposite of left (5)
-        </li>
-        <li data-clue="14" data-dir="down" data-length="3">
-          14. Alternative angle unit (3)
-        </li>
-        <li data-clue="16" data-dir="down" data-length="2">
-          16. Pica unit (2)
-        </li>
-      </ul>
-
-      <p>Click on a clue or press TAB. Type your answers.</p>
     </div>
   );
 }
