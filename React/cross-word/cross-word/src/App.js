@@ -195,7 +195,7 @@ function App() {
         if (dir === "across") {
           copy[i + idx] = { ...copy[i + idx], edit: true };
           if (
-            state.current.answers[Math.floor(idx / 4)][(idx + i) % 4] === "" &&
+            state.current.answers[Math.floor(idx / 4)][(idx % 4) + i] === "" &&
             cursor === length - 1
           ) {
             cursor = i;
@@ -211,6 +211,8 @@ function App() {
         }
       }
 
+      // across [math(index / size)][cursor]
+      // down [math(index / size) + cursor][index % size]
       // 해당 축에 edit style 입히고, 만약 입력된 값이 있다면 cursor 위치 변경하기
       setWordList(copy);
 
@@ -274,7 +276,6 @@ function App() {
   const keyPressHandler = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(e.key);
       switch (e.key) {
         case "Shift":
         case "Space":
@@ -284,7 +285,19 @@ function App() {
         case "ArrowLeft":
         case "ArrowDown":
         case "ArrowRight":
-          return;
+          if (!state.current.clue) return;
+          if (
+            (state.current.dir === "across") &
+            (e.key === "ArrowUp" || e.key === "ArrowDown")
+          )
+            return;
+          else if (
+            (state.current.dir === "down") &
+            (e.key === "ArrowLeft" || e.key === "ArrowRight")
+          )
+            return;
+
+          break;
         case "Tab":
           let nextIndex;
           if (!state.current.clue) {
@@ -330,9 +343,9 @@ function App() {
               state.current.cursor
             ] = "";
           } else {
-            state.current.answers[Math.floor(state.current.cursor)][
-              state.current.index % 4
-            ] = "";
+            state.current.answers[
+              Math.floor(state.current.index / 4) + state.current.cursor
+            ][state.current.index % 4] = "";
           }
 
           // 정답에서 해당 인덱스 지우기
@@ -342,43 +355,45 @@ function App() {
           console.log(e.key.length);
           if (e.key.length > 1) return;
           // 클루가 없거나 이상한 키를 입력했을 때
-
           if (state.current.dir === "across") {
             state.current.answers[Math.floor(state.current.index / 4)][
-              state.current.cursor % 4
+              state.current.cursor
             ] = e.key;
           } else {
-            state.current.answers[Math.floor(state.current.cursor)][
-              state.current.index % 4
-            ] = e.key;
+            state.current.answers[
+              Math.floor(state.current.index / 4) + state.current.cursor
+            ][state.current.index % 4] = e.key;
           }
 
           // 정답에 반영하기
           break;
       }
 
-      let copy = [...wordList];
+      // across [math(index / size)][cursor]
+      // down [math(index / size) + cursor][index % size]
 
+      let copy = [...wordList];
       const { dir, index, cursor, length, answers } = state.current;
 
       if (dir === "across") {
         copy[index + cursor].cursor = false;
-        if (e.key.length === 9) {
+        if (e.key.length === 9 && e.key === "Backspace") {
           copy[index + cursor].answer = "";
         } else if (e.key.length === 1) {
           copy[index + cursor].answer = e.key;
         }
       } else {
         copy[index + cursor * 4].cursor = false;
-        if (e.key.length === 9) {
+        if (e.key.length === 9 && e.key === "Backspace") {
           copy[index + cursor * 4].answer = "";
         } else if (e.key.length === 1) {
           copy[index + cursor * 4].answer = e.key;
         }
       }
-      if (e.key.length === 9) {
+
+      if (e.key.length === 9 && e.key === "Backspace") {
         state.current.cursor -= 1;
-      } else {
+      } else if (e.key.length === 1) {
         state.current.cursor += 1;
         if (
           dir === "across" &&
@@ -389,11 +404,23 @@ function App() {
         } else if (
           dir === "down" &&
           state.current.cursor + 1 < length &&
-          answers[state.current.cursor][index % 4] !== ""
+          answers[Math.floor(index / 4) + state.current.cursor][index % 4] !==
+            ""
         ) {
           state.current.cursor += 1;
         }
         // 키 입력할 때 해당 인덱스가 채워져 있다면 다음 인덱스로 이동
+      } else {
+        if (e.key === "ArrowLeft") {
+          state.current.cursor -= 1;
+        } else if (e.key === "ArrowRight") {
+          state.current.cursor += 1;
+        } else if (e.key === "ArrowDown") {
+          state.current.cursor += 1;
+          console.log(e.key);
+        } else if (e.key === "ArrowUp") {
+          state.current.cursor -= 1;
+        }
       }
 
       // 다음 커서 위치 설정 (키 입력에 따라서)
@@ -411,6 +438,7 @@ function App() {
       } else {
         copy[index + state.current.cursor * 4].cursor = true;
       }
+      console.log(copy);
       setWordList(copy);
 
       // 다음 커서 반영
@@ -426,7 +454,7 @@ function App() {
     };
   }, [keyPressHandler]);
 
-  const toggleClue = async (clue) => {
+  const toggleClue = (clue) => {
     const { index, dir, length } = clue;
     let copy = [...wordList];
     for (let i = 0; i < length; i++) {
