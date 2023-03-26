@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import "./App.css";
 import cx from "classnames";
 
@@ -7,22 +7,6 @@ function App() {
     {
       box: true,
       clue: 1,
-      answer: "",
-      cursor: false,
-      edit: false,
-      hightlight: false,
-    },
-    {
-      box: true,
-      clue: 0,
-      answer: "",
-      cursor: false,
-      edit: false,
-      hightlight: false,
-    },
-    {
-      box: true,
-      clue: 0,
       answer: "",
       cursor: false,
       edit: false,
@@ -45,7 +29,15 @@ function App() {
       hightlight: false,
     },
     {
-      box: true,
+      box: false,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: false,
       clue: 0,
       answer: "",
       cursor: false,
@@ -70,6 +62,70 @@ function App() {
     },
     {
       box: false,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: true,
+      clue: 3,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: true,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: true,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: true,
+      clue: 4,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: false,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: true,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: false,
+      clue: 0,
+      answer: "",
+      cursor: false,
+      edit: false,
+      hightlight: false,
+    },
+    {
+      box: true,
       clue: 0,
       answer: "",
       cursor: false,
@@ -77,12 +133,7 @@ function App() {
       hightlight: false,
     },
   ]);
-  const clueList = [
-    { clue: 1, answer: "dog", length: 3, dir: "across", index: 0 },
-    { clue: 2, answer: "cat", length: 3, dir: "across", index: 3 },
-    { clue: 1, answer: "dog", length: 3, dir: "down", index: 0 },
-  ];
-  const copyRef = useRef(null);
+  const [clueList, setClueList] = useState(null);
   const state = useRef({
     index: null,
     clue: null,
@@ -91,6 +142,101 @@ function App() {
     answers: {},
     dir: null,
   });
+
+  const findClue = useCallback(
+    (clueNum, tab) => {
+      if (tab) {
+        return tab;
+      }
+      const clues = clueList.filter((item) => {
+        return item.clue === clueNum;
+      });
+      if (clues.length === 1) {
+        return clues[0];
+      } else if (state.current.clue === clues[0].clue) {
+        return state.current.dir === "across" ? clues[1] : clues[0];
+      } else {
+        return clues[0];
+      }
+    },
+    [clueList]
+  );
+
+  const editClue = useCallback(
+    (item, idx, tab) => {
+      console.log(item);
+      let copy = [...wordList];
+
+      if (state.current.clue) {
+        const index = state.current.index;
+        if (state.current.dir === "across") {
+          for (let i = 0; i < state.current.length; i++) {
+            copy[i + index].cursor = false;
+            copy[i + index].edit = false;
+          }
+        } else {
+          for (let i = 0; i < state.current.length; i++) {
+            copy[index + i * 4].cursor = false;
+            copy[index + i * 4].edit = false;
+          }
+        }
+
+        setWordList(copy);
+      }
+      // ================================================= 이전 하이라이팅 제거
+
+      const { clue } = item;
+      const { answer, length, dir } = findClue(clue, tab);
+      console.log(length, dir);
+
+      for (let i = 0; i < length; i++) {
+        if (dir === "across") {
+          copy[i + idx] = { ...wordList[i + idx], edit: true };
+        } else {
+          copy[idx + i * 4] = { ...wordList[idx + i * 4], edit: true };
+        }
+      }
+      setWordList(copy);
+
+      state.current = { ...state.current, index: idx, clue, dir, length };
+
+      if (state.current.answers[clue + "-" + dir] === undefined) {
+        state.current.answers[clue + "-" + dir] = "";
+        state.current.cursor = 0;
+      } else {
+        if (
+          state.current.length ===
+          state.current.answers[clue + "-" + dir].length
+        ) {
+          state.current.cursor =
+            state.current.answers[clue + "-" + dir].length - 1;
+        } else {
+          state.current.cursor = state.current.answers[clue + "-" + dir].length;
+        } // 해당 인덱스에 알파벳이 적혀 있는지 확인 후 있다면 건너 뛴다.
+      }
+
+      if (state.current.dir === "across") {
+        copy[state.current.index + state.current.cursor].cursor = true;
+      } else {
+        copy[state.current.index + state.current.cursor * 4].cursor = true;
+      }
+
+      // 클릭하면 커서, edit 기능만 하는 구간
+      // setWordList(copy);??
+
+      // 힌트에 불 들어오게 하는 로직 짜기
+    },
+    [wordList, findClue]
+  );
+
+  useEffect(() => {
+    setClueList([
+      { clue: 1, answer: "dog", length: 3, dir: "across", index: 0 },
+      { clue: 3, answer: "daum", length: 4, dir: "across", index: 8 },
+      { clue: 2, answer: "oman", length: 4, dir: "down", index: 1 },
+      { clue: 4, answer: "ma", length: 2, dir: "down", index: 11 },
+    ]);
+  }, []);
 
   useEffect(() => {
     const keyPressHandler = (e) => {
@@ -129,8 +275,7 @@ function App() {
           } else if (nextIndex < 0) {
             nextIndex = clueList.length - 1;
           }
-          console.log(nextIndex, "next");
-          console.log(copyRef.current, "tap 사본");
+
           editClue(
             wordList[clueList[nextIndex].index],
             clueList[nextIndex].index,
@@ -167,7 +312,7 @@ function App() {
           }
           break;
       }
-      let copy = [...copyRef.current];
+      let copy = [...wordList];
       if (state.current.dir === "across") {
         copy[state.current.index + state.current.cursor].cursor = false;
         if (e.key.length === 9) {
@@ -176,11 +321,11 @@ function App() {
           copy[state.current.index + state.current.cursor].answer = e.key;
         }
       } else {
-        copy[state.current.index + state.current.cursor * 3].cursor = false;
+        copy[state.current.index + state.current.cursor * 4].cursor = false;
         if (e.key.length === 9) {
-          copy[state.current.index + state.current.cursor * 3].answer = "";
+          copy[state.current.index + state.current.cursor * 4].answer = "";
         } else {
-          copy[state.current.index + state.current.cursor * 3].answer = e.key;
+          copy[state.current.index + state.current.cursor * 4].answer = e.key;
         }
       }
       state.current.cursor =
@@ -201,9 +346,8 @@ function App() {
       if (state.current.dir === "across") {
         copy[state.current.index + state.current.cursor].cursor = true;
       } else {
-        copy[state.current.index + state.current.cursor * 3].cursor = true;
+        copy[state.current.index + state.current.cursor * 4].cursor = true;
       }
-      copyRef.current = copy;
       setWordList(copy);
     };
 
@@ -211,88 +355,7 @@ function App() {
     return () => {
       document.removeEventListener("keydown", keyPressHandler);
     };
-  }, [copyRef.current]);
-
-  const findClue = (clueNum, tab) => {
-    if (tab) {
-      return tab;
-    }
-    const clues = clueList.filter((item) => {
-      return item.clue === clueNum;
-    });
-    if (clues.length === 1) {
-      return clues[0];
-    } else if (state.current.clue === clues[0].clue) {
-      return state.current.dir === "across" ? clues[1] : clues[0];
-    } else {
-      return clues[0];
-    }
-  };
-
-  const editClue = (item, idx, tab) => {
-    console.log(copyRef.current, "editclue");
-    copyRef.current
-      ? console.log([...copyRef.current], "시발 안 사라졌다니까?")
-      : console.log("유실");
-    let copy = copyRef.current ? [...copyRef.current] : [...wordList];
-    console.log(copy, "copy", copyRef.current);
-    if (state.current.clue) {
-      const index = state.current.index;
-      if (state.current.dir === "across") {
-        for (let i = 0; i < state.current.length; i++) {
-          copy[i + index].cursor = false;
-          copy[i + index].edit = false;
-        }
-      } else {
-        for (let i = 0; i < state.current.length; i++) {
-          copy[index + i * 3].cursor = false;
-          copy[index + i * 3].edit = false;
-        }
-      }
-
-      setWordList(copy);
-    }
-    // ================================================= 이전 하이라이팅 제거
-
-    const { clue } = item;
-    const { answer, length, dir } = findClue(clue, tab);
-
-    for (let i = 0; i < length; i++) {
-      if (dir === "across") {
-        copy[i + idx] = { ...wordList[i + idx], edit: true };
-      } else {
-        copy[idx + i * 3] = { ...wordList[idx + i * 3], edit: true };
-      }
-    }
-    setWordList(copy);
-    copyRef.current = copy;
-    state.current = { ...state.current, index: idx, clue, dir, length };
-
-    if (state.current.answers[clue + "-" + dir] === undefined) {
-      state.current.answers[clue + "-" + dir] = "";
-      state.current.cursor = 0;
-    } else {
-      if (
-        state.current.length === state.current.answers[clue + "-" + dir].length
-      ) {
-        state.current.cursor =
-          state.current.answers[clue + "-" + dir].length - 1;
-      } else {
-        state.current.cursor = state.current.answers[clue + "-" + dir].length;
-      } // 해당 인덱스에 알파벳이 적혀 있는지 확인 후 있다면 건너 뛴다.
-    }
-
-    if (state.current.dir === "across") {
-      copy[state.current.index + state.current.cursor].cursor = true;
-    } else {
-      copy[state.current.index + state.current.cursor * 3].cursor = true;
-    }
-
-    // 클릭하면 커서, edit 기능만 하는 구간
-    // setWordList(copy);??
-
-    // 힌트에 불 들어오게 하는 로직 짜기
-  };
+  }, [wordList, clueList, editClue]);
 
   return (
     <div className="grid">
