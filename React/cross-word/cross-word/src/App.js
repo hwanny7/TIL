@@ -466,7 +466,7 @@ function App() {
       } else {
         copy[index + i * 4] = {
           ...copy[index + i * 4],
-          hightlight: !copy[i + index].hightlight,
+          hightlight: !copy[index + i * 4].hightlight,
         };
       }
     }
