@@ -180,8 +180,6 @@ function App() {
             copy[index + i * 4].edit = false;
           }
         }
-
-        setWordList(copy);
       }
 
       // 이전에 켜져 있는 edit과 cursor 지우기
@@ -215,7 +213,6 @@ function App() {
       // across [math(index / size)][cursor]
       // down [math(index / size) + cursor][index % size]
       // 해당 축에 edit style 입히고, 만약 입력된 값이 있다면 cursor 위치 변경하기
-      setWordList(copy);
 
       state.current = {
         ...state.current,
@@ -232,6 +229,7 @@ function App() {
         copy[state.current.index + state.current.cursor * 4].cursor = true;
       }
 
+      setWordList(copy);
       // 해당 축에서 입력된 값이 이미 있다면 그 다음 칸으로, 아니라면 첫번째 칸에 cursor style 입히기
     },
     [wordList, findClue]
