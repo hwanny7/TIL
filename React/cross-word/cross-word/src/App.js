@@ -142,6 +142,7 @@ function App() {
     answers: [...Array(4)].map((e) => Array(4).fill("")),
     dir: null,
   });
+  const hightRef = useRef([]);
 
   const findClue = useCallback(
     (clueNum, tab) => {
@@ -447,7 +448,7 @@ function App() {
   );
 
   useEffect(() => {
-    console.log("재렌더링!");
+    console.log("useEffect!");
     document.addEventListener("keydown", keyPressHandler);
     return () => {
       document.removeEventListener("keydown", keyPressHandler);
@@ -470,6 +471,7 @@ function App() {
         };
       }
     }
+    console.log("변경함!");
     setWordList(copy);
   };
 
@@ -514,10 +516,11 @@ function App() {
         {clueList.map((clue, idx) => {
           return (
             <li
+              style={{ marginBottom: "5vh" }}
               key={idx}
               data-clue={clue.clue}
-              // onMouseOver={() => toggleClue(clue)}
-              // onMouseOut={() => toggleClue(clue)}
+              onMouseOver={() => toggleClue(clue)}
+              onMouseOut={() => toggleClue(clue)}
             >
               {idx + ".  " + clue.content}
             </li>
