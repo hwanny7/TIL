@@ -34,6 +34,9 @@ enum MovieListEndpoint: String, CaseIterable {
     }
 }
 
+// url end point 를 반환
+
+
 enum MovieError: Error, CustomNSError {
     
     case apiError
