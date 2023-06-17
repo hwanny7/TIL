@@ -31,6 +31,8 @@
 		AE7679352A3ADB86007C12ED /* MovieListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7679342A3ADB86007C12ED /* MovieListState.swift */; };
 		AE7679382A3AE24F007C12ED /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7679372A3AE24F007C12ED /* ActivityIndicatorView.swift */; };
 		AE76793A2A3AE325007C12ED /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7679392A3AE325007C12ED /* LoadingView.swift */; };
+		AE76793C2A3DF1D3007C12ED /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76793B2A3DF1D3007C12ED /* MovieDetailView.swift */; };
+		AE76793E2A3DF1FB007C12ED /* MovieDetailState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE76793D2A3DF1FB007C12ED /* MovieDetailState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +80,8 @@
 		AE7679342A3ADB86007C12ED /* MovieListState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieListState.swift; sourceTree = "<group>"; };
 		AE7679372A3AE24F007C12ED /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		AE7679392A3AE325007C12ED /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		AE76793B2A3DF1D3007C12ED /* MovieDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailView.swift; sourceTree = "<group>"; };
+		AE76793D2A3DF1FB007C12ED /* MovieDetailState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +209,7 @@
 				AE76792E2A3AD7C9007C12ED /* MoviePosterCarousel.swift */,
 				AE7679322A3ADB73007C12ED /* MovieListView.swift */,
 				AE7679392A3AE325007C12ED /* LoadingView.swift */,
+				AE76793B2A3DF1D3007C12ED /* MovieDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -214,6 +219,7 @@
 			children = (
 				AE7679262A3AC405007C12ED /* ImageLoader.swift */,
 				AE7679342A3ADB86007C12ED /* MovieListState.swift */,
+				AE76793D2A3DF1FB007C12ED /* MovieDetailState.swift */,
 			);
 			path = Bindings;
 			sourceTree = "<group>";
@@ -362,6 +368,7 @@
 				AE6984692A3A032300DBD36B /* ContentView.swift in Sources */,
 				AE6984672A3A032300DBD36B /* Movie_SwiftApp.swift in Sources */,
 				AE7679242A3AC3BE007C12ED /* MovieBackdropCard.swift in Sources */,
+				AE76793E2A3DF1FB007C12ED /* MovieDetailState.swift in Sources */,
 				AE7679122A3AAE2D007C12ED /* MovieService.swift in Sources */,
 				AE76792D2A3AD5DB007C12ED /* MoviePosterCard.swift in Sources */,
 				AE76793A2A3AE325007C12ED /* LoadingView.swift in Sources */,
@@ -373,6 +380,7 @@
 				AE76792B2A3ACF75007C12ED /* MovieBackdropCarousalView.swift in Sources */,
 				AE76790F2A3AAD9A007C12ED /* Movie.swift in Sources */,
 				AE7679332A3ADB73007C12ED /* MovieListView.swift in Sources */,
+				AE76793C2A3DF1D3007C12ED /* MovieDetailView.swift in Sources */,
 				AE7679142A3AB1F6007C12ED /* MovieStore.swift in Sources */,
 				AE76792F2A3AD7C9007C12ED /* MoviePosterCarousel.swift in Sources */,
 			);

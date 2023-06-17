@@ -31,6 +31,7 @@ struct MovieListView: View {
                         }
                     }
                 }
+                .listRowInsets(EdgeInsets(top: 16, leading: 0, bottom: 8, trailing: 0))
 
                 Group {
                     if upcomingState.movies != nil {
@@ -42,6 +43,7 @@ struct MovieListView: View {
                         }
                     }
                 }
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                 
                 Group {
                     if topRatedState.movies != nil {
@@ -53,6 +55,7 @@ struct MovieListView: View {
                         }
                     }
                 }
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
 
                 Group {
                     if popularState.movies != nil {
@@ -64,6 +67,7 @@ struct MovieListView: View {
                         }
                     }
                 }
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 16, trailing: 0))
             }
             .navigationTitle("The MovieDb")
         }
