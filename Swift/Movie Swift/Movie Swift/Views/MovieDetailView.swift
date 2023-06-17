@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MovieDetailView: View {
     
-    let movieId: Int
+//    let movieId: Int
     
     
     var body: some View {
