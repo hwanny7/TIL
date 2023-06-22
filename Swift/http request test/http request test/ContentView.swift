@@ -16,6 +16,7 @@ class ViewModel: ObservableObject {
     @Published var dogImage: UIImage?
     
     func fetchData() {
+
         guard let url = URL(string: "https://dog.ceo/api/breeds/image/random") else { return }
         let task = URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
             if let error = error {
