@@ -35,6 +35,8 @@ class MovieDetailState: ObservableObject {
             }
             
         }
+        // {} 부분은 클로저이고 메서드의 두 번째 인자로 전달된다.
+        // 클로저는 비동기적으로 실행되며, 메서드의 API 요청이 완료된 후 호출된다.
     }
     
 }

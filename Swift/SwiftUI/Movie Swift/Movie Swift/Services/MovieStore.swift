@@ -85,9 +85,11 @@ class MovieStore: MovieService {
                 self.executeCompletionHandlerInMainThread(with: .failure(.noData), completion: completion)
                 return
             }
+
             
             do {
                 let decodeResponse = try self.jsonDecoder.decode(D.self, from: data)
+                print(decodeResponse)
                 self.executeCompletionHandlerInMainThread(with: .success(decodeResponse), completion: completion)
             } catch {
                 self.executeCompletionHandlerInMainThread(with: .failure(.serializationError), completion: completion)
@@ -99,6 +101,9 @@ class MovieStore: MovieService {
         DispatchQueue.main.async {
             completion(result)
         }
+        
+        // Ui를 업데이트 하기 위해 전달받은 클로저를 main 큐에 넣는다.
+        // 해당 클로저는 movieDetailState에 적혀 있고, decoding된 Json을 Movie 객체에 넣는 로직이 적혀있다.
     }
     
 }

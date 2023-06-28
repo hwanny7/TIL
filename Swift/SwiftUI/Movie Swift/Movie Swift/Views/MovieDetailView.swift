@@ -30,6 +30,7 @@ struct MovieDetailView: View {
 
 struct MovieDetailListView: View {
     let movie: Movie
+    @State private var selectedTrailer: MovieVideo?
     
     var body: some View {
         List {
@@ -82,19 +83,40 @@ struct MovieDetailListView: View {
                             }
                         }
                         
-//                        if movie.screenWriters != nil && movie.screenWriters!.count > 0 {
-//                            Text("Screenwriter(s)").font(.headline)
-//                                .padding(.top)
-//                            ForEach(self.movie.screenWriters!.prefix(2)) { crew in
-//                                Text(crew.name)
-//                            }
-//                        }
+                        if movie.screenWriters != nil && movie.screenWriters!.count > 0 {
+                            Text("Screenwriter(s)").font(.headline)
+                                .padding(.top)
+                            ForEach(self.movie.screenWriters!.prefix(2)) { crew in
+                                Text(crew.name)
+                            }
+                        }
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                 }
             }
             
             Divider()
+            
+            if movie.youtubeTrailers != nil &&
+                movie.youtubeTrailers!.count > 0 {
+                Text("Trailers").font(.headline)
+                
+                ForEach(movie.youtubeTrailers!) { trailer in
+                    Button(action: {
+                        self.selectedTrailer = trailer
+                    }) {
+                        HStack {
+                            Text(trailer.name)
+                            Spacer()
+                            Image(systemName: "play.circle.fill")
+                                .foregroundColor(Color(UIColor.systemBlue))
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(item: self.$selectedTrailer) { trailer in
+                SafariView(url: trailer.youtubeURL!)
         }
     }
 }
