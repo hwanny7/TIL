@@ -140,7 +140,7 @@
 		AE6984652A3A032300DBD36B /* Movie Swift */ = {
 			isa = PBXGroup;
 			children = (
-				AE7679252A3AC3E7007C12ED /* Bindings */,
+				AE7679252A3AC3E7007C12ED /* ViewModels */,
 				AE7679202A3AC34F007C12ED /* Views */,
 				AE7679102A3AAE19007C12ED /* Services */,
 				AE76790D2A3AAD82007C12ED /* Models */,
@@ -223,7 +223,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		AE7679252A3AC3E7007C12ED /* Bindings */ = {
+		AE7679252A3AC3E7007C12ED /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				AE7679262A3AC405007C12ED /* ImageLoader.swift */,
@@ -231,7 +231,7 @@
 				AE76793D2A3DF1FB007C12ED /* MovieDetailState.swift */,
 				AE7BEB602A4C29BA00310CC4 /* MovieSearchState.swift */,
 			);
-			path = Bindings;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		AE7679362A3AE22E007C12ED /* UIKitViews */ = {

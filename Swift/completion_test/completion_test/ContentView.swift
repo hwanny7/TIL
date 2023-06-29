@@ -16,12 +16,17 @@ struct ContentView: View {
                 Button("뉴스를 받아보자!") {
                     getNews(completion: changeNewsData)
                 }
+                
+//                if news != nil {
+//                    NewsView(title: news?.articles[0].title!)
+//                }
             }
         }
     }
 
     func changeNewsData(news: News) {
         self.news = news
+        print(news.articles.first!)
     }
     
 }
@@ -29,13 +34,13 @@ struct ContentView: View {
 
 struct NewsView: View {
     let title: String
-    let description: String
-    let url: String
+//    let description: String
+//    let url: String
     
     var body: some View {
         VStack {
             Text(title).font(.headline)
-            Text(description).fontWeight(.bold)
+//            Text(description).fontWeight(.bold)
         }
     }
 }

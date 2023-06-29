@@ -14,6 +14,9 @@ class MovieStore: MovieService {
     static let shared = MovieStore()
     private init() {}
     
+    // private init 메서드를 통해 외부에서는 movieStore의 인스턴스를 직접 생성하지 못하게 함
+    // 외부에서는 MovieStore.shared를 통해서만 접근 가능하도록 한다.
+    
     // 싱글톤 패턴
     
     private let apiKey = "4e0be2c22f7268edffde97481d49064a"

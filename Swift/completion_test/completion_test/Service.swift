@@ -17,13 +17,18 @@ func getNews(completion: @escaping (News) -> Void) {
             fatalError("Error retieving quote: \(error.localizedDescription)")
         }
         
-        let decoder = JSONDecoder()
+        guard let data = data else {
+            return
+        }
+        
+
+        
         do {
-            let news = try decoder.decode(News.self, from: data!)
+            let decoder = JSONDecoder()
+            let news = try decoder.decode(News.self, from: data)
             completion(news)
         } catch {
-            print(error.localizedDescription)
-//            fatalError("Error decoding data \(error.localizedDescription)")
+            fatalError("Error decoding data \(error.localizedDescription)")
         }
     }.resume()
 }
