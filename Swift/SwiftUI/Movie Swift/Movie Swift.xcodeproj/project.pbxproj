@@ -144,10 +144,10 @@
 				AE7679202A3AC34F007C12ED /* Views */,
 				AE7679102A3AAE19007C12ED /* Services */,
 				AE76790D2A3AAD82007C12ED /* Models */,
+				AE69846C2A3A032400DBD36B /* Preview Content */,
 				AE6984662A3A032300DBD36B /* Movie_SwiftApp.swift */,
 				AE69846A2A3A032400DBD36B /* Assets.xcassets */,
 				AE6984682A3A032300DBD36B /* ContentView.swift */,
-				AE69846C2A3A032400DBD36B /* Preview Content */,
 				AE7679152A3AB2A4007C12ED /* utils.swift */,
 			);
 			path = "Movie Swift";

@@ -15,7 +15,6 @@ struct MovieDetailView: View {
     
     var body: some View {
         ZStack {
-//            Color.pink.ignoresSafeArea()
             LoadingView(isLoading: self.movieDetailState.isLoading, error: self.movieDetailState.error) {
                 self.movieDetailState.loadMovie(id: self.movieId)
             }
@@ -24,10 +23,7 @@ struct MovieDetailView: View {
                 MovieDetailListView(movie: self.movieDetailState.movie!)
             }
         }
-        .toolbarBackground(
-            Color.blue,
-            for: .navigationBar)
-        .toolbar(.hidden, for: .tabBar)
+//        .toolbar(.hidden, for: .tabBar)
         .onAppear {self.movieDetailState.loadMovie(id: self.movieId)}
     }
 }
@@ -45,13 +41,14 @@ struct MovieDetailListView: View {
             
             Group {
                 Text(movie.title)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 
                 
                 HStack {
                     Text(movie.yearText)
                     Text(movie.durationText)
                     Text(movie.genreText)
-                }
+                }.frame(maxWidth: .infinity, alignment: .center)
                 
                 Text(movie.overview)
                 

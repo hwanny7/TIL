@@ -19,7 +19,6 @@ struct MovieListView: View {
     
     
     var body: some View {
-        NavigationView {
             List {
                 Group {
                     if nowPlayingState.movies != nil {
@@ -69,7 +68,6 @@ struct MovieListView: View {
                 }
                 .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 16, trailing: 0))
             }
-        }
         .onAppear {
             self.nowPlayingState.loadMovies(with: .nowPlaying)
             self.upcomingState.loadMovies(with: .upcoming)
