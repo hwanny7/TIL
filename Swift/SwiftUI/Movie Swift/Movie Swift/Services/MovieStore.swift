@@ -26,6 +26,7 @@ class MovieStore: MovieService {
     
     
     func fetchMovies (from endpoint: MovieListEndpoint, completion: @escaping (Result<MovieResponse, MovieError>) -> ()) {
+        // endpoint로 MovieListEndpoint 타입이 들어오게 됨
         guard let url = URL(string: "\(baseAPIURL)/movie/\(endpoint.rawValue)") else {
             completion(.failure(.invalidEndpoint))
             return
@@ -54,15 +55,18 @@ class MovieStore: MovieService {
     }
     
     private func loadURLAndDecode<D: Decodable>(url: URL, params: [String: String]? = nil, completion: @escaping (Result<D, MovieError>) -> ()) {
+  
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             completion(.failure(.invalidEndpoint))
             return
         }
+        // Resolving 이게 뭐지
         
         var queryItems = [URLQueryItem(name: "api_key", value: apiKey)]
         if let params = params {
             queryItems.append(contentsOf: params.map { URLQueryItem(name: $0.key, value: $0.value)})
         }
+        // params 전달인자가 있다면 map으로 하나씩 꺼내서 URLQueryITem "genre=action" 으로 만들어주고 해당 리스트를 queryItems에 append한다.
         
         urlComponents.queryItems = queryItems
         
@@ -71,7 +75,7 @@ class MovieStore: MovieService {
             return
         }
         
-        urlSession.dataTask(with: finalURL) { [weak self](data, response, error ) in
+        urlSession.dataTask(with: finalURL) { [weak self] (data, response, error ) in
             guard let self = self else {return}
             
             if error != nil {
@@ -84,15 +88,17 @@ class MovieStore: MovieService {
                 return
             }
             
+            // response를 HTTPURLResponse 타입으로 다운캐스팅하고, 상태코드가 200에서 299사이인지 확인
+            
             guard let data = data else {
                 self.executeCompletionHandlerInMainThread(with: .failure(.noData), completion: completion)
                 return
             }
-
+            
+            // 서버에서 요청한 데이터가 존재하지 않거나, 요청한 데이터의 권한이 없어 접근할 수 없는 경우
             
             do {
                 let decodeResponse = try self.jsonDecoder.decode(D.self, from: data)
-                print(decodeResponse)
                 self.executeCompletionHandlerInMainThread(with: .success(decodeResponse), completion: completion)
             } catch {
                 self.executeCompletionHandlerInMainThread(with: .failure(.serializationError), completion: completion)
