@@ -55,6 +55,9 @@ class MovieStore: MovieService {
     }
     
     private func loadURLAndDecode<D: Decodable>(url: URL, params: [String: String]? = nil, completion: @escaping (Result<D, MovieError>) -> ()) {
+        
+        // Both <D: Decodable> and <T: Decodable> allow you to work with any type that conforms to the Decodable protocol when using generic functions or classes.
+        // D: Decodable 은 D 타입이 Decodable한 타입이라는 것을 명시한다.
   
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             completion(.failure(.invalidEndpoint))
