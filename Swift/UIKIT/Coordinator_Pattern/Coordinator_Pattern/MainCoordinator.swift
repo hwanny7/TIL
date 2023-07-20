@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-class MainCoordinator: Coordinator {
+class MainCoordinator: NSObject, Coordinator, UINavigationControllerDelegate {
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     
@@ -18,14 +18,17 @@ class MainCoordinator: Coordinator {
     }
     
     func start() {
+
         let vc = ViewController.instantiate()
+        vc.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 0)
         vc.coordinator = self
-        // 해당 controller coordinator 프로퍼티에 MainCoordinator를 등록해준다.
+        
         navigationController.pushViewController(vc, animated: false)
     }
     
-    func buyTapped() {
+    func buyTapped(to productType: Int) {
         let vc = BuyViewController.instantiate()
+        vc.selectedProduct = productType
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
     }
@@ -34,6 +37,25 @@ class MainCoordinator: Coordinator {
         let vc = CreateAccountViewController.instantiate()
         vc.coordinator = self
         navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func childDidFinish(_ child: Coordinator?) {
+        childCoordinators = childCoordinators.filter { $0 !== child }
+    }
+    
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        guard let fromViewController = navigationController.transitionCoordinator?.viewController(forKey: .from) else {
+            return
+        }
+        
+        if navigationController.viewControllers.contains(fromViewController) {
+            return
+        }
+        
+        if let buyViewController = fromViewController as? BuyViewController {
+            childDidFinish(buyViewController.coordinator)
+        }
+        
     }
     
 }
