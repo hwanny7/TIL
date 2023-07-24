@@ -23,7 +23,7 @@ final class AppCoordinator: Coordinator {
     
     init(
         navigationController: UINavigationController,
-        appDIConainer: AppDIContainer
+        appDIContainer: AppDIContainer
     ){
         self.navigationController = navigationController
         self.appDIConainer = appDIConainer
