@@ -1,14 +1,14 @@
 //
-//  clientTests.swift
-//  clientTests
+//  ClientTests.swift
+//  ClientTests
 //
-//  Created by yun on 2023/07/11.
+//  Created by yun on 2023/07/24.
 //
 
 import XCTest
-@testable import client
+@testable import Client
 
-final class clientTests: XCTestCase {
+final class ClientTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
