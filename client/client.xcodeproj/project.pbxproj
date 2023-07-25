@@ -26,6 +26,8 @@
 		AEC2FE6C2A6E76E700D00371 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2FE6B2A6E76E700D00371 /* Endpoint.swift */; };
 		AEC2FE6E2A6E76FB00D00371 /* NetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2FE6D2A6E76FB00D00371 /* NetworkConfig.swift */; };
 		AEC2FE702A6E78CC00D00371 /* AppConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2FE6F2A6E78CC00D00371 /* AppConfigurations.swift */; };
+		AEC2FE742A6EB82500D00371 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2FE732A6EB82500D00371 /* TabBarCoordinator.swift */; };
+		AEC2FE762A6EB84200D00371 /* TabBarDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2FE752A6EB84200D00371 /* TabBarDIContainer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +71,8 @@
 		AEC2FE6B2A6E76E700D00371 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		AEC2FE6D2A6E76FB00D00371 /* NetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConfig.swift; sourceTree = "<group>"; };
 		AEC2FE6F2A6E78CC00D00371 /* AppConfigurations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurations.swift; sourceTree = "<group>"; };
+		AEC2FE732A6EB82500D00371 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
+		AEC2FE752A6EB84200D00371 /* TabBarDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarDIContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +176,7 @@
 			children = (
 				AEC2FE542A6E718100D00371 /* AppDIContainer.swift */,
 				AEC2FE5A2A6E72F600D00371 /* HomeDIContainer.swift */,
+				AEC2FE752A6EB84200D00371 /* TabBarDIContainer.swift */,
 			);
 			path = DIContainer;
 			sourceTree = "<group>";
@@ -179,6 +184,7 @@
 		AEC2FE582A6E72A900D00371 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				AEC2FE712A6EB7F900D00371 /* TabBarScene */,
 				AEC2FE592A6E72D100D00371 /* HomeScene */,
 			);
 			path = Presentation;
@@ -219,6 +225,22 @@
 				AEC2FE6D2A6E76FB00D00371 /* NetworkConfig.swift */,
 			);
 			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		AEC2FE712A6EB7F900D00371 /* TabBarScene */ = {
+			isa = PBXGroup;
+			children = (
+				AEC2FE722A6EB81500D00371 /* Coordinator */,
+			);
+			path = TabBarScene;
+			sourceTree = "<group>";
+		};
+		AEC2FE722A6EB81500D00371 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				AEC2FE732A6EB82500D00371 /* TabBarCoordinator.swift */,
+			);
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,11 +381,13 @@
 				AEC2FE572A6E71A000D00371 /* AppCoordinator.swift in Sources */,
 				AEC2FE702A6E78CC00D00371 /* AppConfigurations.swift in Sources */,
 				AEC2FE682A6E76CE00D00371 /* DataTransferService.swift in Sources */,
+				AEC2FE742A6EB82500D00371 /* TabBarCoordinator.swift in Sources */,
 				AEC2FE612A6E751400D00371 /* DispatchQueueType.swift in Sources */,
 				AEC2FE222A6E70D700D00371 /* AppDelegate.swift in Sources */,
 				AEC2FE242A6E70D700D00371 /* SceneDelegate.swift in Sources */,
 				AEC2FE552A6E718100D00371 /* AppDIContainer.swift in Sources */,
 				AEC2FE6C2A6E76E700D00371 /* Endpoint.swift in Sources */,
+				AEC2FE762A6EB84200D00371 /* TabBarDIContainer.swift in Sources */,
 				AEC2FE652A6E753300D00371 /* Coordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

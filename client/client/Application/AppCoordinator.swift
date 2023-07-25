@@ -12,6 +12,7 @@ protocol AppCoordinatorProtocol {
 final class AppCoordinator: Coordinator {
 
     private let appDIConainer: AppDIContainer
+    // Coordinator 프로토콜에 추가하지 않아도 괜찮은걸까?
     var navigationController: UINavigationController
     
     weak var finishDelegate: CoordinatorFinishDelegate? = nil
@@ -26,11 +27,11 @@ final class AppCoordinator: Coordinator {
         appDIContainer: AppDIContainer
     ){
         self.navigationController = navigationController
-        self.appDIConainer = appDIConainer
+        self.appDIConainer = appDIContainer
     }
     
     func start() {
-        <#code#>
+        
     }
     
     
